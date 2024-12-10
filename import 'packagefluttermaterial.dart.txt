@@ -1,0 +1,91 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(DistanceCalculatorApp());
+}
+
+class DistanceCalculatorApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Distance Calculator',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: DistanceCalculator(),
+    );
+  }
+}
+
+class DistanceCalculator extends StatefulWidget {
+  @override
+  _DistanceCalculatorState createState() => _DistanceCalculatorState();
+}
+
+class _DistanceCalculatorState extends State<DistanceCalculator> {
+  final TextEditingController _speedController = TextEditingController();
+  final TextEditingController _timeController = TextEditingController();
+
+  String _result = "";
+
+  void calculateDistance() {
+    double? speed = double.tryParse(_speedController.text);
+    double? time = double.tryParse(_timeController.text);
+
+    if (speed != null && time != null) {
+      // Convert time from minutes to hours
+      double timeInHours = time / 60;
+      // Calculate distance
+      double distance = speed * timeInHours;
+      setState(() {
+        _result = "Distance traveled: ${distance.toStringAsFixed(2)} km";
+      });
+    } else {
+      setState(() {
+        _result = "Please enter valid numbers for speed and time.";
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Distance Calculator'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextField(
+              controller: _speedController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: 'Speed (km/h)',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            SizedBox(height: 16.0),
+            TextField(
+              controller: _timeController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: 'Time (minutes)',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            SizedBox(height: 16.0),
+            ElevatedButton(
+              onPressed: calculateDistance,
+              child: Icon(Icons.calculate),
+            ),
+            SizedBox(height: 16.0),
+            Text(
+              _result,
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
